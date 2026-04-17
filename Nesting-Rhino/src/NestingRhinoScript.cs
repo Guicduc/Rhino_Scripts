@@ -11,6 +11,8 @@ using Rhino.Geometry;
 using Rhino.Geometry.Intersect;
 using Rhino.Input.Custom;
 
+NestingRhinoScript.Run();
+
 enum RotationMode
 {
     None,
@@ -939,5 +941,3 @@ static class NestingRhinoScript
         }
     }
 }
-
-NestingRhinoScript.Run();

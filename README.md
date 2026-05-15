@@ -6,6 +6,11 @@ Repositorio de ferramentas variadas para Rhino 3D.
 
 Este componente cria um retangulo central a partir de um ponto.
 
+Arquivos:
+
+- `Grasshopper/CenterRectangleComponent.cs`
+- `Grasshopper/CenterRectangle.gha`
+
 Entradas:
 
 - `C` / `Center`: ponto central do retangulo.
@@ -37,6 +42,11 @@ Instalacao:
 ## Curve Is Vertical Grasshopper Component
 
 Este componente identifica se curvas estao na vertical em relacao ao eixo `World Z`.
+
+Arquivos:
+
+- `Grasshopper/VerticalCurveComponent.cs`
+- `Grasshopper/VerticalCurve.gha`
 
 Entradas:
 

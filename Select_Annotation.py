@@ -7,14 +7,6 @@ def select_all_annotations(clear_first=True):
     if clear_first:
         sc.doc.Objects.UnselectAll()
 
-    # Types that cover the common annotation objects across Rhino versions
-    ann_types = (
-        Rhino.Geometry.TextEntity,
-        Rhino.Geometry.TextDot,
-        Rhino.Geometry.Leader,
-        Rhino.Geometry.Dimension
-    )
-
     count = 0
 
     for rhobj in sc.doc.Objects:
@@ -25,12 +17,12 @@ def select_all_annotations(clear_first=True):
         if not geo:
             continue
 
-        if isinstance(geo, ann_types):
+        if isinstance(geo, Rhino.Geometry.Dimension):
             if sc.doc.Objects.Select(rhobj.Id, True):
                 count += 1
 
     sc.doc.Views.Redraw()
-    print("{} annotations selected.".format(count))
+    print("{} dimensions selected.".format(count))
 
 if __name__ == "__main__":
     select_all_annotations()

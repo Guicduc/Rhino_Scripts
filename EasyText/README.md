@@ -7,7 +7,7 @@ Comando simples para Rhino:
 3. Digite no editor flutuante.
 4. Pressione `Ctrl+Enter`.
 
-No clique simples, o script cria um objeto de texto no CPlane da vista ativa, usando a altura do estilo de cota atual do arquivo. Se nao encontrar essa altura, usa `10.0`.
+No clique simples, o script cria um objeto de texto no CPlane da vista ativa com altura ajustada ao zoom da vista. Quanto mais aproximada estiver a vista, menor sera a altura criada no modelo.
 
 No clique e arraste, o script cria texto com quebra de linha dentro da largura arrastada e ajusta a altura da fonte para caber na caixa.
 

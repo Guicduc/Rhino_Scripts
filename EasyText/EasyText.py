@@ -21,6 +21,7 @@ DRAG_THRESHOLD_PIXELS = 8
 MIN_BOX_EDITOR_WIDTH = 60
 MIN_BOX_EDITOR_HEIGHT = 30
 MIN_TEXT_HEIGHT = 0.1
+DEFAULT_TEXT_SCREEN_PIXELS = 2.52
 
 
 class InlineTextEditor(forms.Form):
@@ -159,8 +160,43 @@ def get_insertion_plane(point, view):
     return plane
 
 
-def add_text(text, plane):
-    height = get_text_height()
+def get_screen_text_height(point, view):
+    if not view:
+        return get_text_height()
+
+    try:
+        viewport = view.ActiveViewport
+        plane = viewport.ConstructionPlane()
+        origin = point
+        target_pixels = DEFAULT_TEXT_SCREEN_PIXELS
+
+        low = MIN_TEXT_HEIGHT
+        high = max(get_text_height(), MIN_TEXT_HEIGHT)
+
+        def pixel_height(model_height):
+            start = viewport.WorldToClient(origin)
+            end = viewport.WorldToClient(origin + plane.YAxis * model_height)
+            dx = float(end.X - start.X)
+            dy = float(end.Y - start.Y)
+            return (dx * dx + dy * dy) ** 0.5
+
+        while pixel_height(high) < target_pixels and high < 1000000.0:
+            high *= 2.0
+
+        for _ in range(24):
+            mid = (low + high) * 0.5
+            if pixel_height(mid) < target_pixels:
+                low = mid
+            else:
+                high = mid
+
+        return max(high, MIN_TEXT_HEIGHT)
+    except:
+        return get_text_height()
+
+
+def add_text(text, plane, view=None):
+    height = get_screen_text_height(plane.Origin, view)
     object_id = rs.AddText(text, plane, height, DEFAULT_FONT, 0, 0)
     if object_id:
         rs.SelectObject(object_id)
@@ -251,12 +287,19 @@ def get_entity_plane_size(entity, plane):
     return max(xs) - min(xs), max(ys) - min(ys)
 
 
-def fit_text_height(text, plane, box_width, box_height):
+def fit_text_height(text, plane, box_width, box_height, view=None):
     if box_width <= 0.0 or box_height <= 0.0:
-        return get_text_height()
+        return get_screen_text_height(plane.Origin, view)
+
+    target_height = get_screen_text_height(plane.Origin, view)
+    target_entity = create_text_entity(text, plane, target_height, True, box_width)
+    target_width, target_box_height = get_entity_plane_size(target_entity, plane)
+
+    if target_width <= box_width * 1.01 and target_box_height <= box_height * 1.01:
+        return target_height
 
     low = MIN_TEXT_HEIGHT
-    high = max(float(box_height), MIN_TEXT_HEIGHT)
+    high = max(float(target_height), MIN_TEXT_HEIGHT)
 
     for _ in range(18):
         mid = (low + high) * 0.5
@@ -271,8 +314,8 @@ def fit_text_height(text, plane, box_width, box_height):
     return max(low, MIN_TEXT_HEIGHT)
 
 
-def add_wrapped_text(text, plane, box_width, box_height):
-    text_height = fit_text_height(text, plane, box_width, box_height)
+def add_wrapped_text(text, plane, box_width, box_height, view=None):
+    text_height = fit_text_height(text, plane, box_width, box_height, view)
     entity = create_text_entity(text, plane, text_height, True, box_width)
     object_id = sc.doc.Objects.AddText(entity)
     if object_id:
@@ -451,7 +494,7 @@ def main():
             return
 
         plane, width, height = get_text_box(pick.down_point, pick.up_point, view)
-        object_id = add_wrapped_text(text, plane, width, height)
+        object_id = add_wrapped_text(text, plane, width, height, view)
     else:
         point = pick.up_point if pick.up_point.IsValid else pick.Point()
         location = get_editor_location(point, view)
@@ -461,7 +504,7 @@ def main():
         if not text:
             return
 
-        object_id = add_text(text, get_insertion_plane(point, view))
+        object_id = add_text(text, get_insertion_plane(point, view), view)
 
     if object_id:
         sc.doc.Views.Redraw()

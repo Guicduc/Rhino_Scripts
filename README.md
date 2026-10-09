@@ -2,6 +2,18 @@
 
 Repositorio de ferramentas variadas para Rhino 3D.
 
+## Toggle Sidebar
+
+O script [`toggle_sidebar.py`](toggle_sidebar.py) alterna a visibilidade do container de paineis que contem o painel Layers, liberando espaco para a viewport.
+
+Como usar:
+
+1. Com o painel Layers aberto e encaixado em um container, execute `_RunPythonScript` no Rhino e selecione `toggle_sidebar.py`.
+2. Na primeira execucao, o script salva os identificadores dos paineis abertos nesse container e fecha esses paineis.
+3. Execute o mesmo script novamente para reabrir os paineis salvos no container original.
+
+O estado fica em `scriptcontext.sticky` durante a sessao do Rhino. O script nao altera a geometria e nao afeta paineis de outros containers. Se nenhum container for encontrado para Layers, ele nao faz nada.
+
 ## Center Rectangle Grasshopper Component
 
 Este componente cria um retangulo central a partir de um ponto.

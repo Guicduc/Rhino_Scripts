@@ -2,6 +2,15 @@
 
 Repositorio de ferramentas variadas para Rhino 3D.
 
+## Ativar estilo e layer de uma cota
+
+O script [`Activate_Dimension_Settings.py`](Activate_Dimension_Settings.py) torna ativos o estilo cadastrado e o layer de uma cota selecionada.
+
+1. Selecione uma cota e execute `_RunPythonScript`, escolhendo `Activate_Dimension_Settings.py`. Tambem e possivel executar primeiro e selecionar a cota quando solicitado.
+2. Crie as proximas cotas normalmente. Elas usarao o estilo e o layer ativos.
+
+O script aceita cotas lineares, angulares, radiais e de ordenadas; textos e leaders nao sao aceitos. Cancelar a selecao nao altera as configuracoes. Ajustes individuais da cota de referencia nao sao copiados e os estilos existentes nao sao modificados. O layer ativo tambem vale para outros objetos criados depois, ate voce troca-lo. O Rhino pode tornar visivel e desbloquear o layer ao ativa-lo. Se a ativacao do layer falhar, o script tenta restaurar o estilo anterior e informa qualquer falha.
+
 ## Toggle Sidebar
 
 O script [`toggle_sidebar.py`](toggle_sidebar.py) alterna a visibilidade do container de paineis que contem o painel Layers, liberando espaco para a viewport.
